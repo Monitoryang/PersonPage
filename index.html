@@ -83,6 +83,19 @@
 
     .nav-toggle { display: none; background: none; border: none; color: var(--color-text); cursor: pointer; padding: 8px; }
 
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .lang-toggle {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 6px 14px; border-radius: 999px;
+      background: var(--color-bg-card); border: 1px solid var(--color-border);
+      color: var(--color-text-secondary); font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all var(--transition);
+      font-family: var(--font-base);
+    }
+    .lang-toggle:hover { border-color: var(--color-primary-light); color: var(--color-text); }
+    .lang-toggle svg { width: 14px; height: 14px; }
+    .lang-toggle .lang-active { color: var(--color-primary-light); font-weight: 600; }
+
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .nav-toggle { display: flex; align-items: center; }
@@ -387,15 +400,21 @@
         <span>Portfolio</span>
       </div>
       <ul class="nav-links" id="navLinks">
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#about" data-i18n="nav.about">About</a></li>
+        <li><a href="#skills" data-i18n="nav.skills">Skills</a></li>
+        <li><a href="#projects" data-i18n="nav.projects">Projects</a></li>
+        <li><a href="#experience" data-i18n="nav.experience">Experience</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
       </ul>
-      <button class="nav-toggle" aria-label="Toggle navigation" onclick="document.getElementById('navLinks').classList.toggle('active')">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
+      <div class="nav-right">
+        <button class="lang-toggle" id="langToggle" aria-label="Switch language">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span class="lang-active" id="langLabel">EN</span>
+        </button>
+        <button class="nav-toggle" aria-label="Toggle navigation" onclick="document.getElementById('navLinks').classList.toggle('active')">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -404,41 +423,41 @@
     <div class="container hero-content">
       <div class="hero-badge">
         <span class="pulse"></span>
-        Open to Collaboration
+        <span data-i18n="hero.badge">Open to Collaboration</span>
       </div>
       <h1>
-        AI Engineer<br>
-        <span class="gradient">Drone Intelligence</span>
+        <span data-i18n="hero.title1">AI Engineer</span><br>
+        <span class="gradient" data-i18n="hero.title2">Drone Intelligence</span>
       </h1>
-      <p class="hero-desc">
+      <p class="hero-desc" data-i18n="hero.desc">
         Specializing in deep learning model training, edge deployment, and performance optimization for unmanned aerial systems. Building intelligent perception and decision-making pipelines that fly.
       </p>
       <div class="hero-actions">
         <a href="#projects" class="btn btn-primary">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-          View Projects
+          <span data-i18n="hero.btnProjects">View Projects</span>
         </a>
         <a href="#contact" class="btn btn-outline">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Get in Touch
+          <span data-i18n="hero.btnContact">Get in Touch</span>
         </a>
       </div>
       <div class="hero-stats">
         <div>
           <div class="stat-number">5+</div>
-          <div class="stat-label">Years in AI/ML</div>
+          <div class="stat-label" data-i18n="hero.stat1">Years in AI/ML</div>
         </div>
         <div>
           <div class="stat-number">20+</div>
-          <div class="stat-label">Models Deployed</div>
+          <div class="stat-label" data-i18n="hero.stat2">Models Deployed</div>
         </div>
         <div>
           <div class="stat-number">10+</div>
-          <div class="stat-label">Drone Projects</div>
+          <div class="stat-label" data-i18n="hero.stat3">Drone Projects</div>
         </div>
         <div>
           <div class="stat-number">3x</div>
-          <div class="stat-label">Avg. Inference Speedup</div>
+          <div class="stat-label" data-i18n="hero.stat4">Avg. Inference Speedup</div>
         </div>
       </div>
     </div>
@@ -448,18 +467,18 @@
   <section id="about">
     <div class="container">
       <div class="fade-in">
-        <div class="section-label">About</div>
-        <h2 class="section-title">Bridging AI and Aerial Robotics</h2>
+        <div class="section-label" data-i18n="about.label">About</div>
+        <h2 class="section-title" data-i18n="about.title">Bridging AI and Aerial Robotics</h2>
       </div>
       <div class="about-grid fade-in">
         <div class="about-text">
-          <p>
+          <p data-i18n="about.p1">
             As an AI engineer deeply embedded in the drone industry, I focus on designing and deploying intelligent systems that enable unmanned aerial vehicles to perceive, reason, and act autonomously in complex environments.
           </p>
-          <p>
+          <p data-i18n="about.p2">
             My work spans the full machine learning lifecycle: from data collection and annotation pipeline design, through model architecture research and distributed training, to on-device optimization and real-time inference on edge hardware such as NVIDIA Jetson and Qualcomm platforms.
           </p>
-          <p>
+          <p data-i18n="about.p3">
             I am passionate about pushing the boundaries of what autonomous aerial systems can achieve -- from real-time object detection and semantic segmentation for obstacle avoidance, to multi-sensor fusion and path planning algorithms that operate reliably in GPS-denied environments.
           </p>
         </div>
@@ -469,27 +488,27 @@
               <span class="highlight-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               </span>
-              Model Training
+              <span data-i18n="about.hl1Title">Model Training</span>
             </h4>
-            <p>Large-scale distributed training with PyTorch, mixed-precision, and custom data augmentation pipelines for aerial imagery.</p>
+            <p data-i18n="about.hl1Desc">Large-scale distributed training with PyTorch, mixed-precision, and custom data augmentation pipelines for aerial imagery.</p>
           </div>
           <div class="highlight-card">
             <h4>
               <span class="highlight-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               </span>
-              Edge Deployment
+              <span data-i18n="about.hl2Title">Edge Deployment</span>
             </h4>
-            <p>TensorRT, ONNX Runtime, and custom quantization for real-time inference on Jetson Orin, Xavier NX, and embedded GPUs.</p>
+            <p data-i18n="about.hl2Desc">TensorRT, ONNX Runtime, and custom quantization for real-time inference on Jetson Orin, Xavier NX, and embedded GPUs.</p>
           </div>
           <div class="highlight-card">
             <h4>
               <span class="highlight-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               </span>
-              Performance Optimization
+              <span data-i18n="about.hl3Title">Performance Optimization</span>
             </h4>
-            <p>Profiling-driven optimization: pruning, knowledge distillation, and architecture search for latency-critical drone applications.</p>
+            <p data-i18n="about.hl3Desc">Profiling-driven optimization: pruning, knowledge distillation, and architecture search for latency-critical drone applications.</p>
           </div>
         </div>
       </div>
@@ -500,17 +519,17 @@
   <section id="skills" style="background: var(--color-surface);">
     <div class="container">
       <div class="fade-in">
-        <div class="section-label">Technical Skills</div>
-        <h2 class="section-title">Core Competencies</h2>
-        <p class="section-desc">End-to-end AI engineering capabilities, from research prototyping to production-grade deployment on aerial platforms.</p>
+        <div class="section-label" data-i18n="skills.label">Technical Skills</div>
+        <h2 class="section-title" data-i18n="skills.title">Core Competencies</h2>
+        <p class="section-desc" data-i18n="skills.desc">End-to-end AI engineering capabilities, from research prototyping to production-grade deployment on aerial platforms.</p>
       </div>
       <div class="skills-grid fade-in">
         <div class="skill-card">
           <div class="skill-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           </div>
-          <h3>Deep Learning</h3>
-          <p>CNN, Transformer, YOLO, DETR architectures for detection, segmentation, and tracking in aerial scenes.</p>
+          <h3 data-i18n="skills.s1Title">Deep Learning</h3>
+          <p data-i18n="skills.s1Desc">CNN, Transformer, YOLO, DETR architectures for detection, segmentation, and tracking in aerial scenes.</p>
           <div class="skill-tags">
             <span class="skill-tag">PyTorch</span>
             <span class="skill-tag">MMDetection</span>
@@ -522,8 +541,8 @@
           <div class="skill-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
           </div>
-          <h3>Edge Computing</h3>
-          <p>Model conversion, quantization, and real-time inference optimization for embedded AI accelerators.</p>
+          <h3 data-i18n="skills.s2Title">Edge Computing</h3>
+          <p data-i18n="skills.s2Desc">Model conversion, quantization, and real-time inference optimization for embedded AI accelerators.</p>
           <div class="skill-tags">
             <span class="skill-tag">TensorRT</span>
             <span class="skill-tag">ONNX</span>
@@ -535,8 +554,8 @@
           <div class="skill-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </div>
-          <h3>MLOps & Infrastructure</h3>
-          <p>End-to-end ML pipelines with automated training, evaluation, and continuous deployment workflows.</p>
+          <h3 data-i18n="skills.s3Title">MLOps & Infrastructure</h3>
+          <p data-i18n="skills.s3Desc">End-to-end ML pipelines with automated training, evaluation, and continuous deployment workflows.</p>
           <div class="skill-tags">
             <span class="skill-tag">Docker</span>
             <span class="skill-tag">MLflow</span>
@@ -548,8 +567,8 @@
           <div class="skill-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
           </div>
-          <h3>3D Perception</h3>
-          <p>Point cloud processing, depth estimation, and multi-sensor fusion for 3D environment understanding.</p>
+          <h3 data-i18n="skills.s4Title">3D Perception</h3>
+          <p data-i18n="skills.s4Desc">Point cloud processing, depth estimation, and multi-sensor fusion for 3D environment understanding.</p>
           <div class="skill-tags">
             <span class="skill-tag">Open3D</span>
             <span class="skill-tag">PCL</span>
@@ -561,8 +580,8 @@
           <div class="skill-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
-          <h3>SLAM & Navigation</h3>
-          <p>Visual-inertial odometry, path planning, and autonomous navigation in GPS-denied environments.</p>
+          <h3 data-i18n="skills.s5Title">SLAM & Navigation</h3>
+          <p data-i18n="skills.s5Desc">Visual-inertial odometry, path planning, and autonomous navigation in GPS-denied environments.</p>
           <div class="skill-tags">
             <span class="skill-tag">ORB-SLAM</span>
             <span class="skill-tag">ROS2</span>
@@ -574,8 +593,8 @@
           <div class="skill-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
           </div>
-          <h3>Data Engineering</h3>
-          <p>Large-scale aerial dataset curation, annotation pipeline design, and data quality assurance systems.</p>
+          <h3 data-i18n="skills.s6Title">Data Engineering</h3>
+          <p data-i18n="skills.s6Desc">Large-scale aerial dataset curation, annotation pipeline design, and data quality assurance systems.</p>
           <div class="skill-tags">
             <span class="skill-tag">Label Studio</span>
             <span class="skill-tag">DVC</span>
@@ -591,9 +610,9 @@
   <section id="projects">
     <div class="container">
       <div class="fade-in">
-        <div class="section-label">Projects</div>
-        <h2 class="section-title">Featured Work</h2>
-        <p class="section-desc">Selected projects demonstrating AI engineering expertise applied to unmanned aerial systems.</p>
+        <div class="section-label" data-i18n="projects.label">Projects</div>
+        <h2 class="section-title" data-i18n="projects.title">Featured Work</h2>
+        <p class="section-desc" data-i18n="projects.desc">Selected projects demonstrating AI engineering expertise applied to unmanned aerial systems.</p>
       </div>
       <div class="projects-grid fade-in">
         <div class="project-card">
@@ -601,9 +620,9 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
           </div>
           <div class="project-body">
-            <div class="project-category">Object Detection</div>
-            <h3>Aerial Detection System</h3>
-            <p>Real-time multi-class object detection on drone video streams, achieving 45+ FPS on Jetson Orin with custom YOLOv8 fine-tuned on aerial imagery datasets.</p>
+            <div class="project-category" data-i18n="projects.p1Cat">Object Detection</div>
+            <h3 data-i18n="projects.p1Title">Aerial Detection System</h3>
+            <p data-i18n="projects.p1Desc">Real-time multi-class object detection on drone video streams, achieving 45+ FPS on Jetson Orin with custom YOLOv8 fine-tuned on aerial imagery datasets.</p>
             <div class="project-tech">
               <span>YOLOv8</span>
               <span>TensorRT</span>
@@ -617,9 +636,9 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
           <div class="project-body">
-            <div class="project-category">Autonomous Navigation</div>
-            <h3>GPS-Denied Navigation Pipeline</h3>
-            <p>Visual-inertial SLAM system combined with learned depth estimation for autonomous flight in indoor and underground environments.</p>
+            <div class="project-category" data-i18n="projects.p2Cat">Autonomous Navigation</div>
+            <h3 data-i18n="projects.p2Title">GPS-Denied Navigation Pipeline</h3>
+            <p data-i18n="projects.p2Desc">Visual-inertial SLAM system combined with learned depth estimation for autonomous flight in indoor and underground environments.</p>
             <div class="project-tech">
               <span>ORB-SLAM3</span>
               <span>ROS2</span>
@@ -633,9 +652,9 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
           </div>
           <div class="project-body">
-            <div class="project-category">Semantic Segmentation</div>
-            <h3>Terrain Mapping Engine</h3>
-            <p>Semantic segmentation model for real-time terrain classification from drone-mounted cameras, enabling precision agriculture and survey applications.</p>
+            <div class="project-category" data-i18n="projects.p3Cat">Semantic Segmentation</div>
+            <h3 data-i18n="projects.p3Title">Terrain Mapping Engine</h3>
+            <p data-i18n="projects.p3Desc">Semantic segmentation model for real-time terrain classification from drone-mounted cameras, enabling precision agriculture and survey applications.</p>
             <div class="project-tech">
               <span>SegFormer</span>
               <span>ONNX Runtime</span>
@@ -649,9 +668,9 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           </div>
           <div class="project-body">
-            <div class="project-category">Model Optimization</div>
-            <h3>Inference Acceleration Toolkit</h3>
-            <p>Internal toolkit for automated model pruning, INT8 quantization, and architecture search, reducing model size by 70% while maintaining 95%+ accuracy.</p>
+            <div class="project-category" data-i18n="projects.p4Cat">Model Optimization</div>
+            <h3 data-i18n="projects.p4Title">Inference Acceleration Toolkit</h3>
+            <p data-i18n="projects.p4Desc">Internal toolkit for automated model pruning, INT8 quantization, and architecture search, reducing model size by 70% while maintaining 95%+ accuracy.</p>
             <div class="project-tech">
               <span>NNCF</span>
               <span>TensorRT</span>
@@ -668,30 +687,30 @@
   <section id="experience" style="background: var(--color-surface);">
     <div class="container">
       <div class="fade-in">
-        <div class="section-label">Experience</div>
-        <h2 class="section-title">Professional Journey</h2>
+        <div class="section-label" data-i18n="exp.label">Experience</div>
+        <h2 class="section-title" data-i18n="exp.title">Professional Journey</h2>
       </div>
       <div class="timeline fade-in">
         <div class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="timeline-date">2023 - Present</div>
-          <h3>Senior AI Engineer</h3>
-          <h4>Drone Intelligence Division</h4>
-          <p>Leading the AI perception team, architecting real-time detection and tracking pipelines for next-generation UAV platforms. Deployed models across Jetson Orin fleet serving 50+ active drones.</p>
+          <h3 data-i18n="exp.e1Title">Senior AI Engineer</h3>
+          <h4 data-i18n="exp.e1Org">Drone Intelligence Division</h4>
+          <p data-i18n="exp.e1Desc">Leading the AI perception team, architecting real-time detection and tracking pipelines for next-generation UAV platforms. Deployed models across Jetson Orin fleet serving 50+ active drones.</p>
         </div>
         <div class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="timeline-date">2021 - 2023</div>
-          <h3>AI Engineer</h3>
-          <h4>Autonomous Systems Lab</h4>
-          <p>Developed visual SLAM and depth estimation models for GPS-denied navigation. Built automated training pipelines reducing experiment turnaround by 60%. Published 2 papers on aerial perception.</p>
+          <h3 data-i18n="exp.e2Title">AI Engineer</h3>
+          <h4 data-i18n="exp.e2Org">Autonomous Systems Lab</h4>
+          <p data-i18n="exp.e2Desc">Developed visual SLAM and depth estimation models for GPS-denied navigation. Built automated training pipelines reducing experiment turnaround by 60%. Published 2 papers on aerial perception.</p>
         </div>
         <div class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="timeline-date">2019 - 2021</div>
-          <h3>Machine Learning Engineer</h3>
-          <h4>Computer Vision Startup</h4>
-          <p>Built object detection and semantic segmentation models for industrial inspection drones. Achieved state-of-the-art results on custom aerial datasets with limited compute resources.</p>
+          <h3 data-i18n="exp.e3Title">Machine Learning Engineer</h3>
+          <h4 data-i18n="exp.e3Org">Computer Vision Startup</h4>
+          <p data-i18n="exp.e3Desc">Built object detection and semantic segmentation models for industrial inspection drones. Achieved state-of-the-art results on custom aerial datasets with limited compute resources.</p>
         </div>
       </div>
     </div>
@@ -701,9 +720,9 @@
   <section id="contact" class="contact-section">
     <div class="container">
       <div class="fade-in">
-        <div class="section-label">Contact</div>
-        <h2 class="section-title">Let's Connect</h2>
-        <p class="section-desc">
+        <div class="section-label" data-i18n="contact.label">Contact</div>
+        <h2 class="section-title" data-i18n="contact.title">Let's Connect</h2>
+        <p class="section-desc" data-i18n="contact.desc">
           Interested in collaboration on drone AI, edge computing, or autonomous systems? Feel free to reach out.
         </p>
         <div class="contact-links">
@@ -726,11 +745,191 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <p>&copy; 2025 AI Engineer Portfolio. Built with passion for intelligent aerial systems.</p>
+    <p data-i18n="footer.text">&copy; 2025 AI Engineer Portfolio. Built with passion for intelligent aerial systems.</p>
   </footer>
 
   <!-- Scroll Animation Script -->
   <script>
+    // ===== i18n Translations =====
+    const translations = {
+      en: {
+        'nav.about': 'About',
+        'nav.skills': 'Skills',
+        'nav.projects': 'Projects',
+        'nav.experience': 'Experience',
+        'nav.contact': 'Contact',
+        'hero.badge': 'Open to Collaboration',
+        'hero.title1': 'AI Engineer',
+        'hero.title2': 'Drone Intelligence',
+        'hero.desc': 'Specializing in deep learning model training, edge deployment, and performance optimization for unmanned aerial systems. Building intelligent perception and decision-making pipelines that fly.',
+        'hero.btnProjects': 'View Projects',
+        'hero.btnContact': 'Get in Touch',
+        'hero.stat1': 'Years in AI/ML',
+        'hero.stat2': 'Models Deployed',
+        'hero.stat3': 'Drone Projects',
+        'hero.stat4': 'Avg. Inference Speedup',
+        'about.label': 'About',
+        'about.title': 'Bridging AI and Aerial Robotics',
+        'about.p1': 'As an AI engineer deeply embedded in the drone industry, I focus on designing and deploying intelligent systems that enable unmanned aerial vehicles to perceive, reason, and act autonomously in complex environments.',
+        'about.p2': 'My work spans the full machine learning lifecycle: from data collection and annotation pipeline design, through model architecture research and distributed training, to on-device optimization and real-time inference on edge hardware such as NVIDIA Jetson and Qualcomm platforms.',
+        'about.p3': 'I am passionate about pushing the boundaries of what autonomous aerial systems can achieve -- from real-time object detection and semantic segmentation for obstacle avoidance, to multi-sensor fusion and path planning algorithms that operate reliably in GPS-denied environments.',
+        'about.hl1Title': 'Model Training',
+        'about.hl1Desc': 'Large-scale distributed training with PyTorch, mixed-precision, and custom data augmentation pipelines for aerial imagery.',
+        'about.hl2Title': 'Edge Deployment',
+        'about.hl2Desc': 'TensorRT, ONNX Runtime, and custom quantization for real-time inference on Jetson Orin, Xavier NX, and embedded GPUs.',
+        'about.hl3Title': 'Performance Optimization',
+        'about.hl3Desc': 'Profiling-driven optimization: pruning, knowledge distillation, and architecture search for latency-critical drone applications.',
+        'skills.label': 'Technical Skills',
+        'skills.title': 'Core Competencies',
+        'skills.desc': 'End-to-end AI engineering capabilities, from research prototyping to production-grade deployment on aerial platforms.',
+        'skills.s1Title': 'Deep Learning',
+        'skills.s1Desc': 'CNN, Transformer, YOLO, DETR architectures for detection, segmentation, and tracking in aerial scenes.',
+        'skills.s2Title': 'Edge Computing',
+        'skills.s2Desc': 'Model conversion, quantization, and real-time inference optimization for embedded AI accelerators.',
+        'skills.s3Title': 'MLOps & Infrastructure',
+        'skills.s3Desc': 'End-to-end ML pipelines with automated training, evaluation, and continuous deployment workflows.',
+        'skills.s4Title': '3D Perception',
+        'skills.s4Desc': 'Point cloud processing, depth estimation, and multi-sensor fusion for 3D environment understanding.',
+        'skills.s5Title': 'SLAM & Navigation',
+        'skills.s5Desc': 'Visual-inertial odometry, path planning, and autonomous navigation in GPS-denied environments.',
+        'skills.s6Title': 'Data Engineering',
+        'skills.s6Desc': 'Large-scale aerial dataset curation, annotation pipeline design, and data quality assurance systems.',
+        'projects.label': 'Projects',
+        'projects.title': 'Featured Work',
+        'projects.desc': 'Selected projects demonstrating AI engineering expertise applied to unmanned aerial systems.',
+        'projects.p1Cat': 'Object Detection',
+        'projects.p1Title': 'Aerial Detection System',
+        'projects.p1Desc': 'Real-time multi-class object detection on drone video streams, achieving 45+ FPS on Jetson Orin with custom YOLOv8 fine-tuned on aerial imagery datasets.',
+        'projects.p2Cat': 'Autonomous Navigation',
+        'projects.p2Title': 'GPS-Denied Navigation Pipeline',
+        'projects.p2Desc': 'Visual-inertial SLAM system combined with learned depth estimation for autonomous flight in indoor and underground environments.',
+        'projects.p3Cat': 'Semantic Segmentation',
+        'projects.p3Title': 'Terrain Mapping Engine',
+        'projects.p3Desc': 'Semantic segmentation model for real-time terrain classification from drone-mounted cameras, enabling precision agriculture and survey applications.',
+        'projects.p4Cat': 'Model Optimization',
+        'projects.p4Title': 'Inference Acceleration Toolkit',
+        'projects.p4Desc': 'Internal toolkit for automated model pruning, INT8 quantization, and architecture search, reducing model size by 70% while maintaining 95%+ accuracy.',
+        'exp.label': 'Experience',
+        'exp.title': 'Professional Journey',
+        'exp.e1Title': 'Senior AI Engineer',
+        'exp.e1Org': 'Drone Intelligence Division',
+        'exp.e1Desc': 'Leading the AI perception team, architecting real-time detection and tracking pipelines for next-generation UAV platforms. Deployed models across Jetson Orin fleet serving 50+ active drones.',
+        'exp.e2Title': 'AI Engineer',
+        'exp.e2Org': 'Autonomous Systems Lab',
+        'exp.e2Desc': 'Developed visual SLAM and depth estimation models for GPS-denied navigation. Built automated training pipelines reducing experiment turnaround by 60%. Published 2 papers on aerial perception.',
+        'exp.e3Title': 'Machine Learning Engineer',
+        'exp.e3Org': 'Computer Vision Startup',
+        'exp.e3Desc': 'Built object detection and semantic segmentation models for industrial inspection drones. Achieved state-of-the-art results on custom aerial datasets with limited compute resources.',
+        'contact.label': 'Contact',
+        'contact.title': "Let's Connect",
+        'contact.desc': 'Interested in collaboration on drone AI, edge computing, or autonomous systems? Feel free to reach out.',
+        'footer.text': '&copy; 2025 AI Engineer Portfolio. Built with passion for intelligent aerial systems.'
+      },
+      zh: {
+        'nav.about': '\u5173\u4e8e',
+        'nav.skills': '\u6280\u80fd',
+        'nav.projects': '\u9879\u76ee',
+        'nav.experience': '\u7ecf\u5386',
+        'nav.contact': '\u8054\u7cfb',
+        'hero.badge': '\u5f00\u653e\u5408\u4f5c',
+        'hero.title1': 'AI \u5de5\u7a0b\u5e08',
+        'hero.title2': '\u65e0\u4eba\u673a\u667a\u80fd',
+        'hero.desc': '\u4e13\u6ce8\u4e8e\u65e0\u4eba\u673a\u7cfb\u7edf\u7684\u6df1\u5ea6\u5b66\u4e60\u6a21\u578b\u8bad\u7ec3\u3001\u8fb9\u7f18\u90e8\u7f72\u4e0e\u6027\u80fd\u4f18\u5316\u3002\u6784\u5efa\u80fd\u591f\u98de\u884c\u7684\u667a\u80fd\u611f\u77e5\u4e0e\u51b3\u7b56\u7ba1\u7ebf\u3002',
+        'hero.btnProjects': '\u67e5\u770b\u9879\u76ee',
+        'hero.btnContact': '\u8054\u7cfb\u6211',
+        'hero.stat1': 'AI/ML \u4ece\u4e1a\u5e74\u9650',
+        'hero.stat2': '\u90e8\u7f72\u6a21\u578b\u6570',
+        'hero.stat3': '\u65e0\u4eba\u673a\u9879\u76ee',
+        'hero.stat4': '\u5e73\u5747\u63a8\u7406\u52a0\u901f',
+        'about.label': '\u5173\u4e8e\u6211',
+        'about.title': '\u8fde\u63a5 AI \u4e0e\u822a\u7a7a\u673a\u5668\u4eba',
+        'about.p1': '\u4f5c\u4e3a\u6df1\u8015\u65e0\u4eba\u673a\u884c\u4e1a\u7684 AI \u5de5\u7a0b\u5e08\uff0c\u6211\u4e13\u6ce8\u4e8e\u8bbe\u8ba1\u548c\u90e8\u7f72\u667a\u80fd\u7cfb\u7edf\uff0c\u4f7f\u65e0\u4eba\u673a\u80fd\u591f\u5728\u590d\u6742\u73af\u5883\u4e2d\u81ea\u4e3b\u611f\u77e5\u3001\u63a8\u7406\u548c\u884c\u52a8\u3002',
+        'about.p2': '\u6211\u7684\u5de5\u4f5c\u8986\u76d6\u673a\u5668\u5b66\u4e60\u7684\u5168\u751f\u547d\u5468\u671f\uff1a\u4ece\u6570\u636e\u91c7\u96c6\u548c\u6807\u6ce8\u7ba1\u7ebf\u8bbe\u8ba1\uff0c\u5230\u6a21\u578b\u67b6\u6784\u7814\u7a76\u548c\u5206\u5e03\u5f0f\u8bad\u7ec3\uff0c\u518d\u5230 NVIDIA Jetson \u548c\u9ad8\u901a\u7b49\u8fb9\u7f18\u786c\u4ef6\u4e0a\u7684\u7aef\u4fa7\u4f18\u5316\u548c\u5b9e\u65f6\u63a8\u7406\u3002',
+        'about.p3': '\u6211\u70ed\u8877\u4e8e\u63a8\u52a8\u81ea\u4e3b\u822a\u7a7a\u7cfb\u7edf\u7684\u8fb9\u754c\u2014\u2014\u4ece\u7528\u4e8e\u907f\u969c\u7684\u5b9e\u65f6\u76ee\u6807\u68c0\u6d4b\u548c\u8bed\u4e49\u5206\u5272\uff0c\u5230\u5728 GPS \u62d2\u6b62\u73af\u5883\u4e2d\u53ef\u9760\u8fd0\u884c\u7684\u591a\u4f20\u611f\u5668\u878d\u5408\u548c\u8def\u5f84\u89c4\u5212\u7b97\u6cd5\u3002',
+        'about.hl1Title': '\u6a21\u578b\u8bad\u7ec3',
+        'about.hl1Desc': '\u57fa\u4e8e PyTorch \u7684\u5927\u89c4\u6a21\u5206\u5e03\u5f0f\u8bad\u7ec3\u3001\u6df7\u5408\u7cbe\u5ea6\u8bad\u7ec3\u4ee5\u53ca\u9488\u5bf9\u822a\u62cd\u56fe\u50cf\u7684\u81ea\u5b9a\u4e49\u6570\u636e\u589e\u5f3a\u7ba1\u7ebf\u3002',
+        'about.hl2Title': '\u8fb9\u7f18\u90e8\u7f72',
+        'about.hl2Desc': '\u57fa\u4e8e TensorRT\u3001ONNX Runtime \u548c\u81ea\u5b9a\u4e49\u91cf\u5316\u65b9\u6848\uff0c\u5728 Jetson Orin\u3001Xavier NX \u548c\u5d4c\u5165\u5f0f GPU \u4e0a\u5b9e\u73b0\u5b9e\u65f6\u63a8\u7406\u3002',
+        'about.hl3Title': '\u6027\u80fd\u4f18\u5316',
+        'about.hl3Desc': '\u9a71\u52a8\u578b\u6027\u80fd\u5206\u6790\u4f18\u5316\uff1a\u6a21\u578b\u526a\u679d\u3001\u77e5\u8bc6\u84b8\u998f\u548c\u67b6\u6784\u641c\u7d22\uff0c\u670d\u52a1\u4e8e\u5ef6\u8fdf\u654f\u611f\u578b\u65e0\u4eba\u673a\u5e94\u7528\u3002',
+        'skills.label': '\u6280\u672f\u6280\u80fd',
+        'skills.title': '\u6838\u5fc3\u80fd\u529b',
+        'skills.desc': '\u7aef\u5230\u7aef AI \u5de5\u7a0b\u80fd\u529b\uff0c\u4ece\u7814\u7a76\u539f\u578b\u5230\u822a\u7a7a\u5e73\u53f0\u751f\u4ea7\u7ea7\u90e8\u7f72\u3002',
+        'skills.s1Title': '\u6df1\u5ea6\u5b66\u4e60',
+        'skills.s1Desc': 'CNN\u3001Transformer\u3001YOLO\u3001DETR \u67b6\u6784\uff0c\u7528\u4e8e\u822a\u62cd\u573a\u666f\u4e2d\u7684\u68c0\u6d4b\u3001\u5206\u5272\u548c\u8ddf\u8e2a\u3002',
+        'skills.s2Title': '\u8fb9\u7f18\u8ba1\u7b97',
+        'skills.s2Desc': '\u6a21\u578b\u8f6c\u6362\u3001\u91cf\u5316\u53ca\u5d4c\u5165\u5f0f AI \u52a0\u901f\u5668\u7684\u5b9e\u65f6\u63a8\u7406\u4f18\u5316\u3002',
+        'skills.s3Title': 'MLOps \u4e0e\u57fa\u7840\u8bbe\u65bd',
+        'skills.s3Desc': '\u7aef\u5230\u7aef ML \u7ba1\u7ebf\uff0c\u5305\u542b\u81ea\u52a8\u5316\u8bad\u7ec3\u3001\u8bc4\u4f30\u548c\u6301\u7eed\u90e8\u7f72\u5de5\u4f5c\u6d41\u3002',
+        'skills.s4Title': '3D \u611f\u77e5',
+        'skills.s4Desc': '\u70b9\u4e91\u5904\u7406\u3001\u6df1\u5ea6\u4f30\u8ba1\u548c\u591a\u4f20\u611f\u5668\u878d\u5408\uff0c\u7528\u4e8e 3D \u73af\u5883\u7406\u89e3\u3002',
+        'skills.s5Title': 'SLAM \u4e0e\u5bfc\u822a',
+        'skills.s5Desc': '\u89c6\u89c9\u60ef\u6027\u91cc\u7a0b\u8ba1\u3001\u8def\u5f84\u89c4\u5212\u548c GPS \u62d2\u6b62\u73af\u5883\u4e2d\u7684\u81ea\u4e3b\u5bfc\u822a\u3002',
+        'skills.s6Title': '\u6570\u636e\u5de5\u7a0b',
+        'skills.s6Desc': '\u5927\u89c4\u6a21\u822a\u62cd\u6570\u636e\u96c6\u6574\u7406\u3001\u6807\u6ce8\u7ba1\u7ebf\u8bbe\u8ba1\u548c\u6570\u636e\u8d28\u91cf\u4fdd\u8bc1\u7cfb\u7edf\u3002',
+        'projects.label': '\u9879\u76ee',
+        'projects.title': '\u7cbe\u9009\u4f5c\u54c1',
+        'projects.desc': '\u7cbe\u9009\u9879\u76ee\uff0c\u5c55\u793a\u5e94\u7528\u4e8e\u65e0\u4eba\u673a\u7cfb\u7edf\u7684 AI \u5de5\u7a0b\u4e13\u4e1a\u80fd\u529b\u3002',
+        'projects.p1Cat': '\u76ee\u6807\u68c0\u6d4b',
+        'projects.p1Title': '\u822a\u62cd\u68c0\u6d4b\u7cfb\u7edf',
+        'projects.p1Desc': '\u65e0\u4eba\u673a\u89c6\u9891\u6d41\u4e0a\u7684\u5b9e\u65f6\u591a\u7c7b\u76ee\u6807\u68c0\u6d4b\uff0c\u5728 Jetson Orin \u4e0a\u4f7f\u7528\u81ea\u5b9a\u4e49 YOLOv8 \u5fae\u8c03\u822a\u62cd\u56fe\u50cf\u6570\u636e\u96c6\uff0c\u8fbe\u5230 45+ FPS\u3002',
+        'projects.p2Cat': '\u81ea\u4e3b\u5bfc\u822a',
+        'projects.p2Title': 'GPS \u62d2\u6b62\u5bfc\u822a\u7ba1\u7ebf',
+        'projects.p2Desc': '\u89c6\u89c9\u60ef\u6027 SLAM \u7cfb\u7edf\u7ed3\u5408\u5b66\u4e60\u578b\u6df1\u5ea6\u4f30\u8ba1\uff0c\u5b9e\u73b0\u5ba4\u5185\u548c\u5730\u4e0b\u73af\u5883\u4e2d\u7684\u81ea\u4e3b\u98de\u884c\u3002',
+        'projects.p3Cat': '\u8bed\u4e49\u5206\u5272',
+        'projects.p3Title': '\u5730\u5f62\u6620\u5c04\u5f15\u64ce',
+        'projects.p3Desc': '\u57fa\u4e8e\u65e0\u4eba\u673a\u6444\u50cf\u5934\u7684\u5b9e\u65f6\u5730\u5f62\u5206\u7c7b\u8bed\u4e49\u5206\u5272\u6a21\u578b\uff0c\u8d4b\u80fd\u7cbe\u51c6\u519c\u4e1a\u548c\u6d4b\u7ed8\u5e94\u7528\u3002',
+        'projects.p4Cat': '\u6a21\u578b\u4f18\u5316',
+        'projects.p4Title': '\u63a8\u7406\u52a0\u901f\u5de5\u5177\u5305',
+        'projects.p4Desc': '\u5185\u90e8\u5de5\u5177\u5305\uff0c\u652f\u6301\u81ea\u52a8\u5316\u6a21\u578b\u526a\u679d\u3001INT8 \u91cf\u5316\u548c\u67b6\u6784\u641c\u7d22\uff0c\u5728\u4fdd\u6301 95%+ \u7cbe\u5ea6\u7684\u540c\u65f6\u51cf\u5c11 70% \u6a21\u578b\u4f53\u79ef\u3002',
+        'exp.label': '\u5de5\u4f5c\u7ecf\u5386',
+        'exp.title': '\u804c\u4e1a\u5386\u7a0b',
+        'exp.e1Title': '\u9ad8\u7ea7 AI \u5de5\u7a0b\u5e08',
+        'exp.e1Org': '\u65e0\u4eba\u673a\u667a\u80fd\u4e8b\u4e1a\u90e8',
+        'exp.e1Desc': '\u9886\u5bfc AI \u611f\u77e5\u56e2\u961f\uff0c\u4e3a\u4e0b\u4e00\u4ee3\u65e0\u4eba\u673a\u5e73\u53f0\u8bbe\u8ba1\u5b9e\u65f6\u68c0\u6d4b\u548c\u8ddf\u8e2a\u7ba1\u7ebf\u3002\u5728 Jetson Orin \u673a\u7fa4\u4e0a\u90e8\u7f72\u6a21\u578b\uff0c\u670d\u52a1 50+ \u67b6\u6d3b\u8dc3\u65e0\u4eba\u673a\u3002',
+        'exp.e2Title': 'AI \u5de5\u7a0b\u5e08',
+        'exp.e2Org': '\u81ea\u4e3b\u7cfb\u7edf\u5b9e\u9a8c\u5ba4',
+        'exp.e2Desc': '\u5f00\u53d1\u7528\u4e8e GPS \u62d2\u6b62\u5bfc\u822a\u7684\u89c6\u89c9 SLAM \u548c\u6df1\u5ea6\u4f30\u8ba1\u6a21\u578b\u3002\u6784\u5efa\u81ea\u52a8\u5316\u8bad\u7ec3\u7ba1\u7ebf\uff0c\u5c06\u5b9e\u9a8c\u5468\u8f6c\u65f6\u95f4\u7f29\u77ed 60%\u3002\u53d1\u8868 2 \u7bc7\u822a\u7a7a\u611f\u77e5\u8bba\u6587\u3002',
+        'exp.e3Title': '\u673a\u5668\u5b66\u4e60\u5de5\u7a0b\u5e08',
+        'exp.e3Org': '\u8ba1\u7b97\u673a\u89c6\u89c9\u521b\u4e1a\u516c\u53f8',
+        'exp.e3Desc': '\u4e3a\u5de5\u4e1a\u5de1\u68c0\u65e0\u4eba\u673a\u6784\u5efa\u76ee\u6807\u68c0\u6d4b\u548c\u8bed\u4e49\u5206\u5272\u6a21\u578b\u3002\u5728\u6709\u9650\u8ba1\u7b97\u8d44\u6e90\u4e0b\uff0c\u5728\u81ea\u5b9a\u4e49\u822a\u62cd\u6570\u636e\u96c6\u4e0a\u8fbe\u5230 SOTA \u6c34\u5e73\u3002',
+        'contact.label': '\u8054\u7cfb\u6211',
+        'contact.title': '\u8054\u7cfb\u6211',
+        'contact.desc': '\u5bf9\u65e0\u4eba\u673a AI\u3001\u8fb9\u7f18\u8ba1\u7b97\u6216\u81ea\u4e3b\u7cfb\u7edf\u5408\u4f5c\u611f\u5174\u8da3\uff1f\u6b22\u8fce\u8054\u7cfb\u3002',
+        'footer.text': '&copy; 2025 AI \u5de5\u7a0b\u5e08\u4e2a\u4eba\u4e3b\u9875\u3002\u4ee5\u5bf9\u667a\u80fd\u822a\u7a7a\u7cfb\u7edf\u7684\u70ed\u7231\u800c\u6784\u5efa\u3002'
+      }
+    };
+
+    // ===== Language Toggle Logic =====
+    let currentLang = localStorage.getItem('lang') || 'en';
+
+    function applyLanguage(lang) {
+      const dict = translations[lang];
+      if (!dict) return;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) {
+          if (key === 'footer.text') {
+            el.innerHTML = dict[key];
+          } else {
+            el.textContent = dict[key];
+          }
+        }
+      });
+      document.getElementById('langLabel').textContent = lang === 'en' ? 'EN' : '\u4e2d';
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+    }
+
+    document.getElementById('langToggle').addEventListener('click', () => {
+      applyLanguage(currentLang === 'en' ? 'zh' : 'en');
+    });
+
+    // Apply saved language on load
+    applyLanguage(currentLang);
+
+    // ===== Scroll Animation =====
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
