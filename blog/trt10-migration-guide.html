@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TensorRT 8 → 10 迁移实战 | Blog</title>
+  <meta name="description" content="TensorRT 10.16.1 适配实战：API 变更解析、踩坑记录与升级优势分析">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-primary: #7C3AED; --color-primary-light: #A78BFA;
+      --color-secondary: #6366F1; --color-accent: #EC4899;
+      --color-success: #10B981; --color-warning: #F59E0B; --color-error: #EF4444;
+      --color-bg: #0A0A0F; --color-bg-card: #13131A; --color-surface: #16161F;
+      --color-text: #F1F0F5; --color-text-secondary: #9896A3; --color-text-muted: #6B6978;
+      --color-border: #2A2A35;
+      --color-code-bg: #1E1E2E; --color-code-text: #CDD6F4;
+      --color-code-kw: #CBA6F7; --color-code-str: #A6E3A1;
+      --color-code-cmt: #6C7086; --color-code-fn: #89B4FA;
+      --color-code-tp: #F9E2AF; --color-code-num: #FAB387;
+      --font-base: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --radius: 12px; --radius-sm: 8px; --max-width: 900px;
+      --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-base); background: var(--color-bg); color: var(--color-text); line-height: 1.8; -webkit-font-smoothing: antialiased; }
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--color-border); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--color-text); text-decoration: none; }
+    .nav-logo .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary); }
+    .nav-links { list-style: none; display: flex; gap: 32px; }
+    .nav-links a { color: var(--color-text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: color var(--transition); }
+    .nav-links a:hover { color: var(--color-text); }
+    .hero { padding: 140px 24px 80px; text-align: center; background: radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.08) 0%, transparent 60%); }
+    .hero-tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 20px; background: rgba(124,58,237,0.12); color: var(--color-primary-light); font-size: 13px; font-weight: 500; margin-bottom: 24px; }
+    .hero-tag .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--color-success); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.2; background: linear-gradient(135deg, var(--color-text) 0%, var(--color-primary-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; }
+    .hero .subtitle { color: var(--color-text-secondary); font-size: 1.1rem; max-width: 640px; margin: 0 auto; }
+    .hero-meta { display: flex; justify-content: center; gap: 24px; margin-top: 32px; color: var(--color-text-muted); font-size: 13px; }
+    .hero-meta span { display: flex; align-items: center; gap: 6px; }
+    .content { max-width: var(--max-width); margin: 0 auto; padding: 0 24px 80px; }
+    .toc { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 48px; }
+    .toc h3 { font-size: 14px; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 8px; }
+    .toc a { color: var(--color-primary-light); text-decoration: none; font-size: 15px; font-weight: 500; }
+    .toc a:hover { text-decoration: underline; }
+    h2 { font-size: 1.6rem; font-weight: 700; margin: 56px 0 24px; padding-bottom: 12px; border-bottom: 2px solid var(--color-border); }
+    h3 { font-size: 1.2rem; font-weight: 600; margin: 36px 0 16px; }
+    h4 { font-size: 1rem; font-weight: 600; margin: 24px 0 12px; color: var(--color-text-secondary); }
+    p { margin-bottom: 16px; color: var(--color-text-secondary); }
+    strong { color: var(--color-text); }
+    ul, ol { padding-left: 24px; margin-bottom: 16px; }
+    li { margin-bottom: 8px; color: var(--color-text-secondary); }
+    pre { background: var(--color-code-bg); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 20px 24px; margin: 16px 0 24px; overflow-x: auto; font-size: 13.5px; line-height: 1.7; }
+    code { font-family: var(--font-mono); font-size: 0.88em; }
+    p code, li code { background: rgba(124,58,237,0.12); color: var(--color-primary-light); padding: 2px 8px; border-radius: 4px; font-size: 0.85em; }
+    .kw { color: var(--color-code-kw); } .fn { color: var(--color-code-fn); } .str { color: var(--color-code-str); }
+    .cmt { color: var(--color-code-cmt); } .tp { color: var(--color-code-tp); } .num { color: var(--color-code-num); }
+    .compare-table { width: 100%; border-collapse: collapse; margin: 20px 0 28px; font-size: 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); overflow: hidden; }
+    .compare-table th { background: var(--color-bg-card); color: var(--color-text); font-weight: 600; padding: 12px 16px; text-align: left; border-bottom: 2px solid var(--color-border); }
+    .compare-table td { padding: 10px 16px; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:hover td { background: rgba(124,58,237,0.04); }
+    .compare-table td:first-child { color: var(--color-text); font-weight: 500; white-space: nowrap; }
+    .old-api { color: var(--color-error); text-decoration: line-through; opacity: 0.7; }
+    .new-api { color: var(--color-success); font-weight: 500; }
+    .alert { border-radius: var(--radius-sm); padding: 16px 20px; margin: 20px 0 24px; border-left: 4px solid; display: flex; gap: 12px; }
+    .alert-icon { flex-shrink: 0; font-size: 18px; line-height: 1.6; }
+    .alert-danger { background: rgba(239,68,68,0.08); border-color: var(--color-error); }
+    .alert-warning { background: rgba(245,158,11,0.08); border-color: var(--color-warning); }
+    .alert-success { background: rgba(16,185,129,0.08); border-color: var(--color-success); }
+    .alert-info { background: rgba(99,102,241,0.08); border-color: var(--color-secondary); }
+    .alert p { margin: 0; }
+    .arch-diagram { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 32px; margin: 24px 0; text-align: center; }
+    .arch-flow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; font-size: 14px; font-weight: 500; }
+    .arch-box { padding: 10px 18px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); }
+    .arch-box.highlight { border-color: var(--color-primary); background: rgba(124,58,237,0.08); color: var(--color-primary-light); }
+    .arch-arrow { color: var(--color-text-muted); font-size: 18px; }
+    .footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--color-border); color: var(--color-text-muted); font-size: 13px; }
+    .footer a { color: var(--color-primary-light); text-decoration: none; }
+    @media (max-width: 768px) {
+      .hero { padding: 120px 16px 60px; } .hero h1 { font-size: 1.8rem; }
+      .hero-meta { flex-direction: column; gap: 8px; } .nav-links { display: none; }
+      .content { padding: 0 16px 60px; } pre { padding: 14px 16px; font-size: 12.5px; }
+      .compare-table { font-size: 12px; } .arch-flow { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><span class="dot"></span><span>Portfolio</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#skills">Skills</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><a href="#" style="color:var(--color-primary-light)">Blog</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag"><span class="pulse"></span>Technical Deep Dive</div>
+  <h1>TensorRT 8 → 10 迁移实战</h1>
+  <p class="subtitle">YOLOv8 目标检测引擎从 TensorRT 8 升级到 TensorRT 10.16.1 的完整适配过程、踩坑记录与架构分析</p>
+  <div class="hero-meta">
+    <span>📅 2025-07</span>
+    <span>⚡ TensorRT 10.16.1 + CUDA 13.2 + OpenCV 5.0.0</span>
+    <span>💻 C++ / CUDA</span>
+  </div>
+</div>
+
+<div class="content">
+  <div class="toc">
+    <h3>📚 目录</h3>
+    <ol>
+      <li><a href="#overview">项目概览与架构设计</a></li>
+      <li><a href="#api-changes">TRT8 → TRT10 核心 API 变更</a></li>
+      <li><a href="#code-analysis">TRT10 代码深度解析</a></li>
+      <li><a href="#pitfalls">踩坑实录：5 个致命问题</a></li>
+      <li><a href="#advantages">TRT10 升级优势分析</a></li>
+      <li><a href="#checklist">迁移 Checklist</a></li>
+    </ol>
+  </div>
+
+  <h2 id="overview">🎯 项目概览与架构设计</h2>
+  <p>本项目将 JoAIEngine_vlm 中的 YOLOv8 检测器从 <strong>TensorRT 8</strong> 迁移到 <strong>TensorRT 10.16.1</strong>，同时适配 <strong>OpenCV 5.0.0</strong> 和 <strong>CUDA 13.2</strong>。新模块放置在 <code>detector_trt10/</code> 目录下，对外接口与原版 <code>detector/</code> 完全一致，使用 <code>joai_trt10</code> 命名空间隔离。</p>
+
+  <h3>技术栈</h3>
+  <table class="compare-table">
+    <thead><tr><th>组件</th><th>旧版本 (TRT8)</th><th>新版本 (TRT10)</th></tr></thead>
+    <tbody>
+      <tr><td>推理引擎</td><td>TensorRT 8.x</td><td>TensorRT 10.16.1</td></tr>
+      <tr><td>CUDA</td><td>11.x / 12.x</td><td>13.2</td></tr>
+      <tr><td>OpenCV</td><td>4.x</td><td>5.0.0</td></tr>
+      <tr><td>NPP API</td><td>nppiResize_8u_C3R</td><td>nppiResize_8u_C3R_Ctx</td></tr>
+      <tr><td>CMake</td><td>FindCUDA</td><td>CUDA language native</td></tr>
+    </tbody>
+  </table>
+
+  <h3>推理管线数据流</h3>
+  <div class="arch-diagram">
+    <div class="arch-flow">
+      <div class="arch-box">cv::Mat (BGR)</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box highlight">CUDA preprocess<br><small>resize + pad + normalize + NCHW</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">setTensorAddress()</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box highlight">enqueueV3(stream)</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">NMS 后处理</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">vector&lt;Result&gt;</div>
+    </div>
+  </div>
+
+  <h2 id="api-changes">🔗 TRT8 → TRT10 核心 API 变更</h2>
+  <p>TensorRT 10 对推理 API 进行了<strong>全面的名称重构</strong>，从"binding index"范式转向"tensor name"范式：</p>
+
+  <table class="compare-table">
+    <thead><tr><th>功能</th><th>TRT8 (旧)</th><th>TRT10 (新)</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>IO 数量</td><td class="old-api">getNbBindings()</td><td class="new-api">getNbIOTensors()</td><td>语义更清晰</td></tr>
+      <tr><td>张量名称</td><td class="old-api">getBindingName(i)</td><td class="new-api">getIOTensorName(i)</td><td>返回 char8_t*</td></tr>
+      <tr><td>张量形状</td><td class="old-api">getBindingDimensions(i)</td><td class="new-api">getTensorShape(name)</td><td>按名称查询</td></tr>
+      <tr><td>IO 模式</td><td class="old-api">getBindingIsInput(i)</td><td class="new-api">getTensorIOMode(name)</td><td>返回枚举</td></tr>
+      <tr><td>设置输入形状</td><td class="old-api">setBindingDimensions(i,dims)</td><td class="new-api">setInputShape(name,dims)</td><td><strong>推理前必须调用</strong></td></tr>
+      <tr><td>绑定缓冲区</td><td class="old-api">buffers[] 传入 enqueueV2</td><td class="new-api">setTensorAddress(name,ptr)</td><td>预先注册</td></tr>
+      <tr><td>执行推理</td><td class="old-api">enqueueV2(buffers,stream,nullptr)</td><td class="new-api">enqueueV3(stream)</td><td>仅传 stream</td></tr>
+      <tr><td>销毁对象</td><td class="old-api">obj-&gt;destroy()</td><td class="new-api">delete obj</td><td>C++ 标准语义</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-warning">
+    <div class="alert-icon">⚠️</div>
+    <div><p><strong>核心范式转变：</strong>TRT10 从 <em>按索引操作</em> 转向 <em>按名称操作</em>。所有 <code>getBinding*</code> 系列 API 均被替换为 <code>getTensor*</code> + 名称字符串参数，提高了代码可读性。</p></div>
+  </div>
+
+  <h2 id="code-analysis">🔍 TRT10 代码深度解析</h2>
+
+  <h3>3.1 引擎初始化 — InitEngine()</h3>
+  <p>初始化阶段完成了引擎加载、张量信息解析、内存分配和地址注册四个关键步骤：</p>
+<pre><code><span class="cmt">// 1. 加载序列化引擎</span>
+mp_runtime = nvinfer1::<span class="fn">createInferRuntime</span>(gLogger);
+mp_engine = mp_runtime-&gt;<span class="fn">deserializeCudaEngine</span>(trtModelStream, size);
+
+<span class="cmt">// 2. TRT10: 按名称查询 IO 张量信息</span>
+m_nb_io_tensors = mp_engine-&gt;<span class="fn">getNbIOTensors</span>();
+<span class="kw">for</span> (<span class="tp">int</span> i = <span class="num">0</span>; i &lt; m_nb_io_tensors; ++i) {
+    <span class="tp">std::string</span> name = mp_engine-&gt;<span class="fn">getIOTensorName</span>(i);
+    <span class="kw">auto</span> mode = mp_engine-&gt;<span class="fn">getTensorIOMode</span>(name.<span class="fn">c_str</span>());
+    <span class="kw">auto</span> dims = mp_engine-&gt;<span class="fn">getTensorShape</span>(name.<span class="fn">c_str</span>());
+}
+
+<span class="cmt">// 3. TRT10: 必须显式设置输入形状</span>
+mp_context-&gt;<span class="fn">setInputShape</span>(input_name, input_dims);
+
+<span class="cmt">// 4. TRT10: 预注册缓冲区地址</span>
+mp_context-&gt;<span class="fn">setTensorAddress</span>(input_name, buffers_device[<span class="num">0</span>]);
+mp_context-&gt;<span class="fn">setTensorAddress</span>(output_name, buffers_device[<span class="num">1</span>]);</code></pre>
+
+  <h3>3.2 推理执行 — inference()</h3>
+  <p>TRT10 的推理调用极其简洁，仅传一个 stream 参数：</p>
+<pre><code><span class="tp">bool</span> status = mp_context-&gt;<span class="fn">enqueueV3</span>(m_stream);
+<span class="cmt">// 从预注册的输出缓冲区拷贝结果</span>
+<span class="fn">cudaMemcpyAsync</span>(output_buffer_host, buffers_device[<span class="num">1</span>], ...);
+<span class="fn">cudaStreamSynchronize</span>(m_stream);</code></pre>
+
+  <h3>3.3 资源释放 — DeInitEngine()</h3>
+  <p>TRT10 使用标准 C++ <code>delete</code> 替代 <code>destroy()</code>：</p>
+<pre><code><span class="cmt">// TRT8:  mp_context-&gt;destroy();</span>
+<span class="cmt">// TRT10: 标准 C++ 语义</span>
+<span class="kw">delete</span> mp_context;
+<span class="kw">delete</span> mp_engine;
+<span class="kw">delete</span> mp_runtime;</code></pre>
+
+  <h3>3.4 GpuMat 路径 — NPP 适配</h3>
+  <p>CUDA 13.2 要求 NPP 函数使用 <code>_Ctx</code> 后缀版本，需手动构造 <code>NppStreamContext</code>：</p>
+<pre><code><span class="tp">NppStreamContext</span> nppStreamCtx;
+<span class="fn">memset</span>(&amp;nppStreamCtx, <span class="num">0</span>, <span class="kw">sizeof</span>(<span class="tp">NppStreamContext</span>));
+nppStreamCtx.hStream = m_stream;
+
+<span class="fn">nppiResize_8u_C3R_Ctx</span>(
+    src, src_step, srcSize, srcRect,
+    dst, dst_step, dstSize, dstRect,
+    NPPI_INTER_LINEAR, nppStreamCtx);</code></pre>
+
+  <h2 id="pitfalls">💥 踩坑实录：5 个致命问题</h2>
+
+  <h3>🔴 坑 1：CUDA_ARCH 不匹配 — 全零输出（最致命）</h3>
+  <div class="alert alert-danger">
+    <div class="alert-icon">💥</div>
+    <div>
+      <p><strong>现象：</strong>程序正常运行，推理耗时正常，但检测结果为 0，所有类别置信度 &lt; 0.001。</p>
+      <p><strong>根因：</strong>CMake 缓存中 <code>CUDA_ARCH=89</code>（RTX 4090），但实际 GPU 为 <strong>RTX A6000 (sm_86)</strong>。CUDA kernel 编译目标与实际 GPU 不匹配，导致 <code>preprocess</code> kernel 以 "named symbol not found" 静默失败，输出缓冲区全零。</p>
+    </div>
+  </div>
+
+  <h4>排查过程</h4>
+  <ol>
+    <li>在 <code>inference()</code> 后添加输出统计 → 发现 max_class_score ≈ 0.00017</li>
+    <li>在 <code>preprocess()</code> 后回读输入缓冲区 → 发现全部为 0</li>
+    <li>添加 <code>cudaStreamSynchronize</code> + <code>cudaGetLastError()</code> → 捕获 "named symbol not found"</li>
+    <li>检查 <code>CMakeCache.txt</code> → <code>CUDA_ARCH:STRING=89</code>，而 GPU 为 sm_86</li>
+  </ol>
+
+  <h4>修复方案</h4>
+<pre><code><span class="cmt"># 重新配置正确架构 + 完全重编译</span>
+cmake .. -DCUDA_ARCH=86
+make clean &amp;&amp; make -j$(nproc)</code></pre>
+
+  <div class="alert alert-warning">
+    <div class="alert-icon">⚠️</div>
+    <div><p><strong>教训：</strong>CMake Cache 会保留旧 <code>CUDA_ARCH</code> 值，即使修改 CMakeLists.txt 默认值也不生效。切换 GPU 后必须显式传入 <code>-DCUDA_ARCH=xx</code> 或删除 <code>CMakeCache.txt</code>。</p></div>
+  </div>
+
+  <h3>🔴 坑 2：enqueueV3 签名变化</h3>
+  <div class="alert alert-danger">
+    <div class="alert-icon">💥</div>
+    <div>
+      <p><strong>TRT8：</strong><code>enqueueV2(void** buffers, cudaStream_t stream, cudaEvent_t* inputConsumed)</code> — 3 个参数</p>
+      <p><strong>TRT10：</strong><code>enqueueV3(cudaStream_t stream)</code> — 仅 1 个参数！</p>
+    </div>
+  </div>
+  <p>缓冲区地址必须通过 <code>setTensorAddress()</code> 预先注册到 execution context。</p>
+
+  <h3>🔴 坑 3：setInputShape 必须调用</h3>
+  <p>即使引擎输入维度是固定的，TRT10 仍要求在推理前显式调用 <code>setInputShape()</code>。遗漏此调用不会崩溃，但推理结果不正确。</p>
+
+  <h3>🟡 坑 4：NPP Ctx 版本函数</h3>
+  <p>CUDA 13.2 中大量 NPP 函数被标记为 deprecated，需使用带 <code>_Ctx</code> 后缀的新版本：</p>
+<pre><code><span class="cmt">// 旧 API（deprecated）:</span>
+<span class="fn">nppiResize_8u_C3R</span>(src, step, srcSize, srcRect, dst, ...);
+
+<span class="cmt">// 新 API:</span>
+<span class="tp">NppStreamContext</span> ctx{};
+ctx.hStream = m_stream;
+<span class="fn">nppiResize_8u_C3R_Ctx</span>(src, step, srcSize, srcRect, dst, ..., ctx);</code></pre>
+
+  <h3>🟡 坑 5：OpenCV 5 模块重命名</h3>
+  <table class="compare-table">
+    <thead><tr><th>OpenCV 4.x</th><th>OpenCV 5.x</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><td>calib3d</td><td>calib</td><td>pkg-config: opencv5</td></tr>
+      <tr><td>features2d</td><td>features</td><td></td></tr>
+      <tr><td>libopencv_*.so.4xx</td><td>libopencv_*.so.500</td><td>需要 LD_LIBRARY_PATH</td></tr>
+    </tbody>
+  </table>
+  <p>运行时需注意 <code>LD_LIBRARY_PATH</code> 指向 OpenCV 5 安装路径（默认 <code>/usr/local/lib</code>）。</p>
+
+  <h2 id="advantages">🚀 TRT10 升级优势分析</h2>
+
+  <h3>5.1 API 设计更现代</h3>
+  <ul>
+    <li><strong>按名称操作：</strong>消除了对 binding index 的硬编码依赖，代码更健壮</li>
+    <li><strong>C++ 标准语义：</strong><code>delete</code> 替代 <code>destroy()</code>，符合 RAII 模式</li>
+    <li><strong>极简推理接口：</strong><code>enqueueV3(stream)</code> 仅一个参数</li>
+  </ul>
+
+  <h3>5.2 性能提升</h3>
+  <ul>
+    <li><strong>更快的 kernel 融合：</strong>TRT10 引入了更激进的 layer fusion 策略</li>
+    <li><strong>更好的 INT8/FP8 支持：</strong>原生 FP8 量化支持（Hopper/Ada 架构）</li>
+    <li><strong>改进的内存管理：</strong>workspace 使用更高效，减少峰值显存占用</li>
+  </ul>
+
+  <h3>5.3 新特性</h3>
+  <ul>
+    <li><strong>Progressive Layer Fusion：</strong>动态选择最优 fusion 策略</li>
+    <li><strong>Hardware-Compatible Engine：</strong>一份引擎在多代 GPU 上运行</li>
+    <li><strong>Improved Error Reporting：</strong>更详细的错误信息</li>
+    <li><strong>ONNX opset 21 支持：</strong>更广泛的模型兼容性</li>
+  </ul>
+
+  <h3>5.4 实测对比</h3>
+  <table class="compare-table">
+    <thead><tr><th>指标</th><th>TRT8</th><th>TRT10</th><th>提升</th></tr></thead>
+    <tbody>
+      <tr><td>推理延迟 (640×384)</td><td>~7.5ms</td><td>~4.4ms</td><td style="color:var(--color-success)">-41%</td></tr>
+      <tr><td>检测精度</td><td>29 targets</td><td>29 targets</td><td>一致</td></tr>
+      <tr><td>API 调用复杂度</td><td>高（索引+数组）</td><td>低（名称+注册）</td><td>简化</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">✅</div>
+    <div><p><strong>结论：</strong>在 RTX A6000 上，TRT10 推理延迟从 ~7.5ms 降至 ~4.4ms，提升约 <strong>41%</strong>。检测精度完全一致。API 更简洁，代码维护性更好。强烈推荐升级。</p></div>
+  </div>
+
+  <h2 id="checklist">✅ 迁移 Checklist</h2>
+  <table class="compare-table">
+    <thead><tr><th>类别</th><th>检查项</th><th>状态</th></tr></thead>
+    <tbody>
+      <tr><td>CMake</td><td>确认 <code>CUDA_ARCH</code> 与目标 GPU 匹配</td><td>☐</td></tr>
+      <tr><td>CMake</td><td>清理 CMakeCache.txt 后重新配置</td><td>☐</td></tr>
+      <tr><td>API</td><td><code>getNbBindings</code> → <code>getNbIOTensors</code></td><td>☐</td></tr>
+      <tr><td>API</td><td><code>getBindingDimensions(i)</code> → <code>getTensorShape(name)</code></td><td>☐</td></tr>
+      <tr><td>API</td><td><code>getBindingIsInput(i)</code> → <code>getTensorIOMode(name)</code></td><td>☐</td></tr>
+      <tr><td>API</td><td>添加 <code>setInputShape()</code> 调用</td><td>☐</td></tr>
+      <tr><td>API</td><td><code>enqueueV2(buffers,...)</code> → <code>setTensorAddress()</code> + <code>enqueueV3(stream)</code></td><td>☐</td></tr>
+      <tr><td>API</td><td><code>destroy()</code> → <code>delete</code></td><td>☐</td></tr>
+      <tr><td>NPP</td><td>NPP 函数替换为 <code>_Ctx</code> 版本</td><td>☐</td></tr>
+      <tr><td>OpenCV</td><td>模块名更新 (calib3d→calib 等)</td><td>☐</td></tr>
+      <tr><td>OpenCV</td><td>运行时 <code>LD_LIBRARY_PATH</code> 指向正确路径</td><td>☐</td></tr>
+      <tr><td>测试</td><td>对比 TRT8/TRT10 检测数量与置信度</td><td>☐</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-info">
+    <div class="alert-icon">💡</div>
+    <div>
+      <p><strong>调试技巧：</strong>迁移后如果检测结果为 0，按以下顺序排查：</p>
+      <ol style="margin-top:8px">
+        <li>确认 <code>CUDA_ARCH</code> 与 GPU 匹配（检查 CMakeCache.txt）</li>
+        <li>在 <code>preprocess()</code> 后回读 GPU 缓冲区验证输入数据</li>
+        <li>检查 <code>cudaGetLastError()</code> 是否有 "named symbol not found"</li>
+        <li>确认 <code>setInputShape()</code> 已调用且返回 true</li>
+        <li>检查 <code>setTensorAddress()</code> 的指针是否有效</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>Built with ❤️ | <a href="../index.html">Back to Portfolio</a></p>
+  <p style="margin-top:8px">TensorRT 10.16.1 · CUDA 13.2 · OpenCV 5.0.0 · YOLOv8</p>
+</footer>
+</body>
+</html>
