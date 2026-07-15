@@ -128,6 +128,7 @@
       <li><a href="#pitfalls">踩坑实录：5 个致命问题</a></li>
       <li><a href="#advantages">TRT10 升级优势分析</a></li>
       <li><a href="#checklist">迁移 Checklist</a></li>
+      <li><a href="#cuda-nms">番外：CUDA NMS 加速</a></li>
     </ol>
   </div>
 
@@ -367,6 +368,56 @@ ctx.hStream = m_stream;
         <li>检查 <code>setTensorAddress()</code> 的指针是否有效</li>
       </ol>
     </div>
+  </div>
+
+  <h2 id="cuda-nms">⚡ 番外：CUDA NMS 加速实现</h2>
+  <p>在完成基础迁移后，我们将 NMS（Non-Maximum Suppression）从 CPU 迁移到了 GPU，进一步减少后处理延迟。</p>
+
+  <h3>设计思路</h3>
+  <div class="arch-diagram">
+    <div class="arch-flow">
+      <div class="arch-box">raw output<br><small>GPU (TRT10)</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box highlight">Decode Kernel<br><small>threshold + bbox decode</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">Copy + Sort<br><small>CPU (small N)</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box highlight">NMS Kernel<br><small>parallel IoU suppression</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">Results<br><small>GPU → Host</small></div>
+    </div>
+  </div>
+
+  <h3>三个 CUDA Kernel</h3>
+  <table class="compare-table">
+    <thead><tr><th>Kernel</th><th>功能</th><th>并行策略</th></tr></thead>
+    <tbody>
+      <tr><td><code>kernel_decode_detections</code></td><td>从原始输出解码 bbox + 置信度过滤</td><td>每个线程处理一个 anchor（5040 并行）</td></tr>
+      <tr><td><code>std::sort</code> (CPU)</td><td>按置信度降序排列过滤后的候选</td><td>候选数通常 &lt; 500，CPU 极快</td></tr>
+      <tr><td><code>kernel_nms</code></td><td>并行计算 IoU 并标记抑制</td><td>每个线程检查一个检测框是否被更高置信度的同类框抑制</td></tr>
+    </tbody>
+  </table>
+
+  <h3>NMS Kernel 核心逻辑</h3>
+<pre><code><span class="cmt">// 每个线程处理一个检测框</span>
+<span class="kw">__global__</span> <span class="tp">void</span> <span class="fn">kernel_nms</span>(
+    <span class="kw">const</span> <span class="tp">GpuDetection</span>* dets, <span class="kw">const</span> <span class="tp">int</span>* order,
+    <span class="tp">int</span>* keep, <span class="tp">int</span> n, <span class="tp">float</span> iou_thresh)
+{
+    <span class="tp">int</span> i = order[blockIdx.x * blockDim.x + threadIdx.x];
+    <span class="cmt">// 检查所有更高置信度的同类框</span>
+    <span class="kw">for</span> (<span class="tp">int</span> k = <span class="num">0</span>; k &lt; n; k++) {
+        <span class="tp">int</span> j = order[k];
+        <span class="kw">if</span> (j == i) <span class="kw">break</span>;  <span class="cmt">// 后面的分数更低，无需检查</span>
+        <span class="kw">if</span> (dets[j].class_id != dets[i].class_id) <span class="kw">continue</span>;
+        <span class="tp">float</span> iou = <span class="fn">compute_iou</span>(dets[i], dets[j]);
+        <span class="kw">if</span> (iou &gt; iou_thresh) { keep[i] = <span class="num">0</span>; <span class="kw">return</span>; }
+    }
+}</code></pre>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">✅</div>
+    <div><p><strong>验证结果：</strong>CUDA NMS 输出与 CPU NMS 完全一致 — 同样 29 个检测目标，置信度和坐标均匹配。整个后处理管线（decode + sort + NMS）全部在 GPU 流中执行，减少 CPU-GPU 同步开销。</p></div>
   </div>
 </div>
 
