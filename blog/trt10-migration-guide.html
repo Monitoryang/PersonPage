@@ -415,9 +415,31 @@ ctx.hStream = m_stream;
     }
 }</code></pre>
 
+  <h3>实测对比（50 runs）</h3>
+  <table class="compare-table">
+    <thead><tr><th>NMS 模式</th><th>平均耗时</th><th>检测数</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><td>CPU NMS</td><td><strong>4.145 ms</strong></td><td>29</td><td style="color:var(--color-success)">✓ 默认方案</td></tr>
+      <tr><td>CUDA NMS</td><td>4.287 ms</td><td>29</td><td>多 ~3.4% 开销</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-info">
+    <div class="alert-icon">💡</div>
+    <div>
+      <p><strong>结论：当前场景下 CPU NMS 更快。</strong>原因：</p>
+      <ul style="margin-top:8px">
+        <li>总耗时被 TRT10 推理主导（~4ms），NMS 仅占极小比例</li>
+        <li>置信度过滤后候选框仅数百个，CPU 处理几乎瞬时</li>
+        <li>CUDA NMS 额外开销：<code>cudaMalloc/free</code>、host↔device 拷贝、<code>cudaStreamSynchronize</code> 同步</li>
+      </ul>
+      <p style="margin-top:8px"><strong>CUDA NMS 更适合的场景：</strong>多路视频流高吞吐、低置信度阈值导致大量候选（>1000）、完全 GPU 管线避免 CPU↔GPU 往返。</p>
+    </div>
+  </div>
+
   <div class="alert alert-success">
     <div class="alert-icon">✅</div>
-    <div><p><strong>验证结果：</strong>CUDA NMS 输出与 CPU NMS 完全一致 — 同样 29 个检测目标，置信度和坐标均匹配。整个后处理管线（decode + sort + NMS）全部在 GPU 流中执行，减少 CPU-GPU 同步开销。</p></div>
+    <div><p><strong>验证结果：</strong>CUDA NMS 输出与 CPU NMS <strong>完全一致</strong> — 同样 29 个检测目标，置信度和坐标均匹配。代码已保留 CUDA NMS 实现，可通过 <code>use_cpu_nms</code> 标志切换。</p></div>
   </div>
 </div>
 
