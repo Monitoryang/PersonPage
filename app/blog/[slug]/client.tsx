@@ -22,7 +22,7 @@ function renderMarkdown(content: string) {
   const flushTable = () => {
     if (tableRows.length > 0) {
       const headerRow = tableRows[0];
-      const dataRows = tableRows.slice(2); // skip separator row
+      const dataRows = tableRows.slice(1); // separator rows already filtered out
       const cols = headerRow.length;
       elements.push(
         <div key={`table-${i}`} className="overflow-x-auto my-6 rounded-lg border border-border">
@@ -141,12 +141,16 @@ function renderMarkdown(content: string) {
       flushAlert();
     }
 
-    // Table
-    if (line.startsWith('| ')) {
+    // Table — detect any line starting with | (with or without space)
+    if (line.startsWith('|') && line.endsWith('|')) {
       flushAlert();
-      const cells = line.split('|').slice(1, -1).map(c => c.trim());
-      if (!inTable) inTable = true;
-      tableRows.push(cells);
+      // Skip separator rows like |---|---|---|
+      const isSepRow = /^\|[\s\-:|]+\|$/.test(line);
+      if (!isSepRow) {
+        const cells = line.split('|').slice(1, -1).map(c => c.trim());
+        if (!inTable) inTable = true;
+        tableRows.push(cells);
+      }
       i++;
       continue;
     }
